@@ -75,4 +75,14 @@ public class Customer {
     private String toDollars(double d){
         return String.format("$%,.2f", abs(d));
     }
+    
+    //added functionality to allow customer to schedule transfers between two accounts
+    public void scheduleTransfer(Account from, Account to, double amount){
+    	from.transfer(to, amount);
+    }
+    
+    public List<Account> getAccount(){
+    	//used for testing purposes only
+    	return accounts;
+    }
 }
