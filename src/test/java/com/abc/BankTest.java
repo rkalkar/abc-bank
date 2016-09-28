@@ -1,6 +1,7 @@
 package com.abc;
 
 import org.junit.Test;
+import java.text.ParseException;
 
 import static org.junit.Assert.assertEquals;
 
@@ -18,13 +19,14 @@ public class BankTest {
     }
 
     @Test
-    public void checkingAccount() {
+    public void checkingAccount() throws ParseException {
         Bank bank = new Bank();
         Account checkingAccount = new Account(Account.CHECKING);
         Customer bill = new Customer("Bill").openAccount(checkingAccount);
         bank.addCustomer(bill);
 
         checkingAccount.deposit(100.0);
+        checkingAccount.transactions.get(0).lastYear();
 
         assertEquals(0.1, bank.totalInterestPaid(), DOUBLE_DELTA);
     }
@@ -36,6 +38,7 @@ public class BankTest {
         bank.addCustomer(new Customer("Bill").openAccount(checkingAccount));
 
         checkingAccount.deposit(1500.0);
+        checkingAccount.transactions.get(0).lastYear();
 
         assertEquals(2.0, bank.totalInterestPaid(), DOUBLE_DELTA);
     }
@@ -47,8 +50,23 @@ public class BankTest {
         bank.addCustomer(new Customer("Bill").openAccount(checkingAccount));
 
         checkingAccount.deposit(3000.0);
+        checkingAccount.transactions.get(0).lastYear();
 
-        assertEquals(170.0, bank.totalInterestPaid(), DOUBLE_DELTA);
+        assertEquals(150.0, bank.totalInterestPaid(), DOUBLE_DELTA);
     }
 
+    @Test
+    public void maxi_savings_account2(){
+    	//This is to test the interest with a withdrawal within 10 days
+    	Bank bank = new Bank();
+        Account checkingAccount = new Account(Account.MAXI_SAVINGS);
+        bank.addCustomer(new Customer("Bill").openAccount(checkingAccount));
+        checkingAccount.deposit(3000.0);
+        checkingAccount.transactions.get(0).lastYear();
+        checkingAccount.withdraw(1000.0);
+        checkingAccount.transactions.get(1).tenDaysAgo();
+        assertEquals(145.95, bank.totalInterestPaid(), 1e-2);
+    }
+
+    
 }
